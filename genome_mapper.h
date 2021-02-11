@@ -25,7 +25,7 @@ class GenomeMapper
     void update()
     {
       const unsigned base_period = 500; // milliseconds
-      const unsigned steps = 10;
+      const unsigned steps = 20;
 
       EVERY_N_MILLISECONDS(base_period / steps)
       {

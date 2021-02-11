@@ -53,11 +53,11 @@ class PalettePattern : public Pattern
     unsigned color_index_for(char base, char next, float offset)
     {
       float integer;
-      return offset_for_base(base) + 64 * modf(offset, &integer);
+      return offset_for_base(base) + 32 * modf(offset, &integer);
     }
 
     unsigned offset_for_base(char base)
-    {      
+    {
       switch (base)
       {
         case 'a': return 0;
@@ -83,6 +83,7 @@ class BasicDiscretePairs : public Pattern
 
 class SlowRainbowPairs : public Pattern
 {
+  protected:
     /* Working state. */
     byte _hue_base = 0;
     bool _increasing = true;
@@ -137,21 +138,24 @@ class SlowRainbowWithSparkles : public SlowRainbowPairs
 {
     void operator()(GenomeMapper const& gm, unsigned start, unsigned end) override
     {
-      EVERY_N_MILLISECONDS(15)
+      EVERY_N_MILLISECONDS(20)
       {
         SlowRainbowPairs::operator()(gm, start, end);
 
-        for (unsigned i = 0; i < 3; ++i)
+        if (millis() % 30000 > 15000 && millis() % 30000 < 25000)
         {
-          unsigned target = random(LEDS_COUNT);
-          if (target < start || target >= end)
-            continue;
+          for (unsigned i = 0; i < 2; ++i)
+          {
+            unsigned target = random(LEDS_COUNT);
+            if (target < start || target >= end)
+              continue;
 
-          if (random(2))
-            continue;
+            if (random(2))
+              continue;
 
-          target += random(2) ? LEDS_PER_PIN : 0;
-          leds[target] = CRGB::White;
+            target += random(2) ? LEDS_PER_PIN : 0;
+            leds[target] = CRGB::White;
+          }
         }
       }
     }
@@ -162,7 +166,7 @@ class SlowRainbowWithFastMovingDropout : public SlowRainbowPairs
     /* Working state. */
     unsigned _dropout = 0;
 
-protected:
+  protected:
     void operator()(GenomeMapper const& gm, unsigned start, unsigned end) override
     {
       SlowRainbowPairs::operator()(gm, start, end);
@@ -261,14 +265,12 @@ class SingleBasesLit : public SlowRainbowPairs
 } single_base_lit;
 
 Pattern* patterns[] = {
-  &slow_rainbow_with_fast_moving_dropout,
-//  &slow_rainbow_with_even_faster_moving_dropout,
-  &palette_pattern,
-  &single_base_lit,
   &slow_rainbow_with_sparkles,
-  &basic_discrete_pairs,
+  &palette_pattern,
+  &slow_rainbow_with_even_faster_moving_dropout,
+  &single_base_lit,
   &slow_rainbow_single_sided,
-  &slow_rainbow_pairs,
+  &basic_discrete_pairs,
 };
 unsigned num_patterns = sizeof(patterns) / sizeof(patterns[0]);
 

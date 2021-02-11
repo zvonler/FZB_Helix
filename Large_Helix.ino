@@ -1,14 +1,14 @@
 #include <FastLED.h>
 
 // Metro M0 Express shield
-//#define MODE_BUTTON_PIN 3
-//#define BRIGHTNESS_PIN A0
-//constexpr int LED_PINS[] = { 10, 11 };
+#define MODE_BUTTON_PIN 3
+#define BRIGHTNESS_PIN A0
+constexpr int LED_PINS[] = { 10, 11 };
 
 // Trinket M0 board
-#define MODE_BUTTON_PIN 0
-#define BRIGHTNESS_PIN A0
-constexpr int LED_PINS[] = { 3, 4 };
+//#define MODE_BUTTON_PIN 0
+//#define BRIGHTNESS_PIN A0
+//constexpr int LED_PINS[] = { 3, 4 };
 
 #define COLOR_ORDER GRB
 #define CHIPSET     WS2812
