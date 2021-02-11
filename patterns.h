@@ -223,8 +223,35 @@ class SlowRainbowSingleSided : public SlowRainbowPairs
       for (unsigned i = start; i < end; ++i)
         leds[i + LEDS_PER_PIN] = CRGB::Black;
     }
-}
-slow_rainbow_single_sided;
+} slow_rainbow_single_sided;
+
+class RainbowBreathe : public SlowRainbowPairs
+{
+    void operator()(GenomeMapper const& gm, unsigned start, unsigned end) override
+    {
+      EVERY_N_MILLISECONDS(10)
+      {
+        SlowRainbowPairs::operator()(gm, start, end);
+      }
+
+      for (unsigned ctr = start; ctr < end; ++ctr)
+      {
+        fadeToBlackBy(leds + ctr, 1, beatsin16(16, 0, 240, 0));
+        fadeToBlackBy(leds + LEDS_PER_PIN + ctr, 1, beatsin16(16, 0, 240, 0, 32767));
+      }
+    }
+
+    CRGB color_for(char base) const override
+    {
+      switch (base)
+      {
+        case 'a': return CHSV(_hue_base + 48, 255, 255);
+        case 'c': return CHSV(_hue_base + 112, 255, 255);
+        case 'g': return CHSV(_hue_base + 176, 255, 255);
+        case 't': return CHSV(_hue_base + 250, 255, 255);
+      }
+    }
+} rainbow_breathe;
 
 class SingleBasesLit : public SlowRainbowPairs
 {
@@ -265,12 +292,13 @@ class SingleBasesLit : public SlowRainbowPairs
 } single_base_lit;
 
 Pattern* patterns[] = {
+  &basic_discrete_pairs,
+  &rainbow_breathe,
   &slow_rainbow_with_sparkles,
+  &single_base_lit,
   &palette_pattern,
   &slow_rainbow_with_even_faster_moving_dropout,
-  &single_base_lit,
   &slow_rainbow_single_sided,
-  &basic_discrete_pairs,
 };
 unsigned num_patterns = sizeof(patterns) / sizeof(patterns[0]);
 

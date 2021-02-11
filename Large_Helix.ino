@@ -17,7 +17,7 @@ constexpr int LED_PINS[] = { 10, 11 };
 
 /* Globals that include files need access to. */
 constexpr int LED_PINS_COUNT = ARRAY_SIZE(LED_PINS);
-constexpr int LEDS_PER_PIN = 24;
+constexpr int LEDS_PER_PIN = 80;
 constexpr int LEDS_COUNT = LED_PINS_COUNT * LEDS_PER_PIN;
 
 CRGB leds[LEDS_PER_PIN * LED_PINS_COUNT];
